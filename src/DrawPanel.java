@@ -7,7 +7,7 @@ public class DrawPanel extends JPanel {
     private Shape currentShape;
     private Color currentColor;
 
-    public DrawPanel(boolean isFilled, Shape currentShape, Color currentColor) {
+    public DrawPanel() {
         this.isFilled = false;
         this.currentShape = null;
         this.currentColor = Color.WHITE;
