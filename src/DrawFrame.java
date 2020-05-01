@@ -1,4 +1,3 @@
-import jdk.swing.interop.DragSourceContextWrapper;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -6,10 +5,12 @@ import java.awt.*;
 
 public class DrawFrame extends JFrame
 {
+    Color currentColor = Color.WHITE;
     JFrame frame;
     JPanel buttonPanel;
     JPanel drawPanel;
-    JButton exitButton, undoButton, clearButton , lineButton, rectangleButton , roundRectangleButton , ovalButton;
+    JButton exitButton, undoButton, clearButton, colorButton , lineButton, rectangleButton , roundRectangleButton , ovalButton;
+    JColorChooser colorChooser;
     JCheckBox isFilledBox;
 
     public DrawFrame()
@@ -23,7 +24,7 @@ public class DrawFrame extends JFrame
         frame.setPreferredSize(new Dimension(700,500));
         frame.setResizable(false);
         frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
-        LayoutManager gridLayout = new GridLayout(0,8,0,10);
+        LayoutManager gridLayout = new GridLayout(0,9,0,10);
         buttonPanel = new JPanel();
         buttonPanel.setLayout(gridLayout);
         drawPanel = new JPanel();
@@ -42,6 +43,9 @@ public class DrawFrame extends JFrame
         exitButton = new JButton("Exit");
         clearButton = new JButton("Clear");
         undoButton = new JButton("Undo");
+        colorButton = new JButton("Color");
+        
+
         lineButton = new JButton();
         try {
             lineButton.setBackground(Color.WHITE);
@@ -81,6 +85,7 @@ public class DrawFrame extends JFrame
         buttonPanel.add(rectangleButton);
         buttonPanel.add(roundRectangleButton);
         buttonPanel.add(ovalButton);
+        buttonPanel.add(colorButton);
         buttonPanel.add(isFilledBox);
         buttonPanel.setBackground(Color.BLACK);
         buttonPanel.setVisible(true);
