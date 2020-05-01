@@ -2,6 +2,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DrawFrame extends JFrame
 {
@@ -27,25 +29,26 @@ public class DrawFrame extends JFrame
         LayoutManager gridLayout = new GridLayout(0,9,0,10);
         buttonPanel = new JPanel();
         buttonPanel.setLayout(gridLayout);
-        drawPanel = new JPanel();
+        drawPanel = new DrawPanel();
         drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         drawPanel.setBackground(Color.WHITE);
         initiateAndAddButtons();
         frame.add(buttonPanel, BorderLayout.NORTH);
-        frame.add(drawPanel, BorderLayout.SOUTH);
+        frame.add(drawPanel);
         frame.pack();
         frame.setVisible(true);
     }
 
     private void initiateAndAddButtons()
     {
+        /*
+        initiate JButtons and JCheckBox + set icons for shape buttons
+         */
         isFilledBox = new JCheckBox("Filled?");
         exitButton = new JButton("Exit");
         clearButton = new JButton("Clear");
         undoButton = new JButton("Undo");
         colorButton = new JButton("Color");
-        
-
         lineButton = new JButton();
         try {
             lineButton.setBackground(Color.WHITE);
@@ -78,6 +81,35 @@ public class DrawFrame extends JFrame
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+        /*
+        add button functionality
+         */
+        exitButton.addMouseListener(new MouseAdapter() { // exit button
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+        });
+
+        clearButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                drawPanel.repaint();
+            }
+        });
+
+        colorButton.addMouseListener(new MouseAdapter() { // get color from the user. default is white.
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                currentColor = JColorChooser.showDialog(frame, "Choose a color", Color.RED);
+                colorButton.setBackground(currentColor); // show user current color
+                int negColor = 0xFFFFFF - currentColor.getRGB();
+                colorButton.setForeground(new Color(negColor)); // make sure text is visible
+            }
+        });
+
+
+
         buttonPanel.add(exitButton);
         buttonPanel.add(clearButton);
         buttonPanel.add(undoButton);
