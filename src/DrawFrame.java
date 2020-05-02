@@ -3,13 +3,16 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+enum ShapeType {LINE,RECTANGLE,ROUND_RECTANGLE,OVAL}
+
 
 public class DrawFrame extends JFrame
 {
     Color currentColor = Color.WHITE;
+    ShapeType currentShape;
     JFrame frame;
     JPanel buttonPanel;
-    JPanel drawPanel;
+    DrawPanel drawPanel;
     JButton exitButton, undoButton, clearButton, colorButton , lineButton, rectangleButton , roundRectangleButton , ovalButton , currentShapeButton;
     JColorChooser colorChooser;
     JCheckBox isFilledBox;
@@ -32,10 +35,12 @@ public class DrawFrame extends JFrame
         drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         drawPanel.setBackground(Color.WHITE);
         initiateAndAddButtons();
+        initializeDrawPanel();
         frame.add(buttonPanel, BorderLayout.NORTH);
         frame.add(drawPanel);
         frame.pack();
         frame.setVisible(true);
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     private void initiateAndAddButtons()
@@ -82,7 +87,7 @@ public class DrawFrame extends JFrame
             System.out.println(ex.getMessage());
         }
         /*
-        add button functionality
+        add button functionality****************************************************************************************
          */
         exitButton.addMouseListener(new MouseAdapter() { // exit button
             @Override
@@ -94,35 +99,46 @@ public class DrawFrame extends JFrame
         clearButton.addMouseListener(new MouseAdapter() { // clear button
             @Override
             public void mouseClicked(MouseEvent e) {
-                drawPanel.repaint();
+                drawPanel.clearShapes();
+            }
+        });
+
+        undoButton.addMouseListener(new MouseAdapter() { // undo button
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                drawPanel.removeLastShape();
+
             }
         });
 
         lineButton.addMouseListener(new MouseAdapter() { // line button
             @Override
             public void mouseClicked(MouseEvent e) {
-                currentShapeButton = lineButton;
+                drawPanel.setCurrentShapeType(ShapeType.LINE);
             }
         });
 
         rectangleButton.addMouseListener(new MouseAdapter() { // rectangle button
             @Override
             public void mouseClicked(MouseEvent e) {
-                currentShapeButton = rectangleButton;
+                drawPanel.setCurrentShapeType(ShapeType.RECTANGLE);
+
             }
         });
 
         roundRectangleButton.addMouseListener(new MouseAdapter() { // round rectangle button
             @Override
             public void mouseClicked(MouseEvent e) {
-                currentShapeButton = roundRectangleButton;
+                drawPanel.setCurrentShapeType(ShapeType.ROUND_RECTANGLE);
+
             }
         });
 
         ovalButton.addMouseListener(new MouseAdapter() { // round rectangle button
             @Override
             public void mouseClicked(MouseEvent e) {
-                currentShapeButton = ovalButton;
+                drawPanel.setCurrentShapeType(ShapeType.OVAL);
+
             }
         });
 
@@ -133,7 +149,7 @@ public class DrawFrame extends JFrame
                 colorButton.setBackground(currentColor); // show user current color
                 int negColor = 0xFFFFFF - currentColor.getRGB();
                 colorButton.setForeground(new Color(negColor)); // make sure text is visible
-                ((DrawPanel)drawPanel).setCurrentColor(currentColor);
+                drawPanel.setCurrentColor(currentColor);
             }
         });
 
@@ -141,14 +157,16 @@ public class DrawFrame extends JFrame
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
                 if (cb.isSelected()) {
-                    ((DrawPanel)drawPanel).setFilled(true);
+                    drawPanel.setFilled(true);
                 } else {
-                    ((DrawPanel)drawPanel).setFilled(false);
+                    drawPanel.setFilled(false);
                 }
             }
         });
 
-
+        /*
+        add buttons to panel********************************************************************************************
+         */
 
         buttonPanel.add(exitButton);
         buttonPanel.add(clearButton);
@@ -163,9 +181,43 @@ public class DrawFrame extends JFrame
         buttonPanel.setVisible(true);
     }
 
+    private void initializeDrawPanel()
+    {
+        drawPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                drawPanel.setStartingPosition(e.getX(),e.getY());
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+                super.mouseDragged(e);
+                drawPanel.setEndPosition(e.getX(),e.getY());
+                drawPanel.drawCurrentDraggedShape();
+                drawPanel.repaint();
+            }
+        });
+
+
+        drawPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                drawPanel.setEndPosition(e.getX(),e.getY());
+                drawPanel.addNewShape();
+                drawPanel.removeDraggedShape();
+                drawPanel.repaint();
+            }
+        });
+    }
+
     public static void main(String args[])
     {
         DrawFrame df = new DrawFrame();
     }
+
+
 
 }

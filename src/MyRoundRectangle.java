@@ -2,13 +2,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 /**
  * @author Tom Ben Shmueli 203525548
- *	MyLine class. defines a rectangle.
- *	The class can compare two rectangles and create a new rectangle object.
+ *	MyRoundRectangle class. defines a round rectangle.
+ *	The class can compare two round rectangles and create a new round rectangle object.
  */
 public class MyRoundRectangle extends MyBoundShape {
 
 	
-	final private int ARC_SIZE = 10;
+	final private static int ARC_SIZE = 10; // arc size param
 	
 	/**
 	 * class CTOR for the MyRectangle class.
@@ -30,6 +30,11 @@ public class MyRoundRectangle extends MyBoundShape {
 		this.setFilled(isFilled);
 	}
 
+	public static int getArcSize()
+	{
+		return ARC_SIZE;
+	}
+
 	/**
 	 * A method to calculate the rectangle's area.
 	 * overrides the MyBoundShape abstract method. 
@@ -43,7 +48,7 @@ public class MyRoundRectangle extends MyBoundShape {
 	/**
 	 * draw implementation for the abstract draw(Graphics g) class.
 	 * The method draws the shape.
-	 * @param Graphics g - to be provided by paintComponent(Graphics g) provided by JPanel.
+	 * @param  g - to be provided by paintComponent(Graphics g) provided by JPanel.
 	 */
 	@Override
 	protected void draw(Graphics g) {
@@ -57,7 +62,7 @@ public class MyRoundRectangle extends MyBoundShape {
 	
 	/**
 	 * equals override. Two rectangles are identical if they have the same area
-	 * @param Object obj - object to be compared.
+	 * @param  obj - object to be compared.
 	 */
 	@Override
 	public boolean equals(Object obj) {
